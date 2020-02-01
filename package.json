@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@types/styled-components": "^4.4.2",
     "expo": "~36.0.0",
     "expo-background-fetch": "~8.0.0",
     "expo-battery": "~2.0.0",
