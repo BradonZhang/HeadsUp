@@ -37,9 +37,10 @@ const HomeScreen: ScreenComponent = (props) => {
     return () => AppState.removeEventListener('change', () => {});
   }, []);
 
-  const handlePress = () => {
-    db.ref('/test').push({
-      x : Math.random()
+  const handlePress = async () => {
+    let y = await db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get();
+    db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({x: (y.data()!.steps ? 0 : y.data()!.steps) + steps}).then(() => {
+      setSteps(0);
     });
   };
 

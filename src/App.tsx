@@ -4,6 +4,8 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import HomeScreen from 'screens/HomeScreen';
 import LoginScreen from 'screens/LoginScreen';
 
+console.disableYellowBox = true;
+
 const AppNavigator = createSwitchNavigator({
   LoginScreen: {
     screen: LoginScreen,
@@ -12,7 +14,7 @@ const AppNavigator = createSwitchNavigator({
     screen: HomeScreen,
   },
 }, {
-  initialRouteName: 'LoginScreen',
+  initialRouteName: 'HomeScreen', //change later
 });
 
 const AppContainer = createAppContainer(AppNavigator);
