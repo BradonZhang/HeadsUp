@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Alert, AppState, StyleSheet } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
+import { db } from '../config';
 
 import { ScreenComponent } from 'utils/interfaces';
 import { stepsPerPoint } from 'res/constants';
@@ -37,7 +38,9 @@ const HomeScreen: ScreenComponent = (props) => {
   }, []);
 
   const handlePress = () => {
-    Alert.alert(`rahul's wish is my command`);
+    db.ref('/test').push({
+      x : Math.random()
+    });
   };
 
   return (
