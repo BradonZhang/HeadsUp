@@ -5,14 +5,14 @@ import HomeScreen from 'screens/HomeScreen';
 import LoginScreen from 'screens/LoginScreen';
 
 const AppNavigator = createSwitchNavigator({
+  LoginScreen: {
+    screen: LoginScreen,
+  },
   HomeScreen: {
     screen: HomeScreen,
   },
-  Login: {
-    screen: LoginScreen,
-  }
 }, {
-  initialRouteName: 'HomeScreen'
+  initialRouteName: 'LoginScreen',
 });
 
 const AppContainer = createAppContainer(AppNavigator);
