@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Alert, AppState, StyleSheet, ActivityIndicator } from 'react-native';
+import {Platform, StatusBar, AppState, StyleSheet, ActivityIndicator } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
 import { db } from '../config';
-import {Overlay} from 'react-native-elements';
+import {Overlay, Button, Header} from 'react-native-elements';
 import Rewards from '../components/Rewards';
 
 import { ScreenComponent } from 'utils/interfaces';
@@ -11,9 +11,10 @@ import { stepsPerPoint } from 'res/constants';
 
 const Container = styled.View`
   flex: 1;
-  background-color: #fff;
+  background-color: lightblue;
   align-items: center;
   justify-content: center;
+  margin-top: ${Platform.OS === 'android' ? StatusBar.currentHeight : 0}px;
 `;
 
 const LargeText = styled.Text`
@@ -66,9 +67,14 @@ const HomeScreen: ScreenComponent = (props) => {
 
   return (
     <Container>
+      <Header backgroundColor= "rgb(232, 255, 251)" containerStyle={{
+        position: 'absolute',
+        top: 0,
+        width: '100%'
+      }}/>
       <LargeText>{steps} steps</LargeText>
       <LargeText>{Math.floor(points)} <MediumText>SafeCoins™</MediumText></LargeText>
-      <Button title={'press me uwu'} onPress={handlePress} />
+      <Button raised type="solid" title={'Redeem Rewards!'} onPress={handlePress} />
       <Overlay isVisible={modalActive} onBackdropPress={() => setModalActive(false)}>
         <Rewards/>
       </Overlay>
