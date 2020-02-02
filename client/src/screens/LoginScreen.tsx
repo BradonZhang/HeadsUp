@@ -83,10 +83,13 @@ const LoginScreen: ScreenComponent = (props) => {
         Alert.alert(result.data.error);
       } else {
         props.navigation.navigate('HomeScreen', {email});
+        setLoadingVisible(false);
+        return;
       }
     } catch (err) {
       console.warn(err);
     }
+    Alert.alert('Invalid username or password');
     setLoadingVisible(false);
   };
 
@@ -99,10 +102,13 @@ const LoginScreen: ScreenComponent = (props) => {
         Alert.alert(result.data.error);
       } else {
         props.navigation.navigate('HomeScreen', {email});
+        setLoadingVisible(false);
+        return;
       }
     } catch (err) {
       console.warn(err);
     }
+    Alert.alert('Account already exists');
     setLoadingVisible(false);
   };
 
