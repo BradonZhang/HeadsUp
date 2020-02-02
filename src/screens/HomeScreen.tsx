@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Alert, AppState, StyleSheet } from 'react-native';
+import { Button, Alert, AppState, StyleSheet, ActivityIndicator } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
 import { db } from '../config';
+import {Overlay} from 'react-native-elements';
+import Rewards from '../components/Rewards';
 
 import { ScreenComponent } from 'utils/interfaces';
 import { stepsPerPoint } from 'res/constants';
@@ -27,6 +29,7 @@ const HomeScreen: ScreenComponent = (props) => {
   const [steps, setSteps] = useState(0);
   const [points, setPoints] = useState(0);
   const [active, setActive] = useState(true);
+  const [modalActive, setModalActive] = useState(false);
 
   useEffect(() => {
     let initialSteps = 0;
@@ -57,8 +60,8 @@ const HomeScreen: ScreenComponent = (props) => {
     return () => AppState.removeEventListener('change', () => {_subscription && _subscription.remove();});
   }, []);
 
-  const handlePress = async () => {
-    Alert.alert("Testing");
+  const handlePress = () => {
+    setModalActive(true);
   };
 
   return (
@@ -66,6 +69,9 @@ const HomeScreen: ScreenComponent = (props) => {
       <LargeText>{steps} steps</LargeText>
       <LargeText>{Math.floor(points)} <MediumText>SafeCoins™</MediumText></LargeText>
       <Button title={'press me uwu'} onPress={handlePress} />
+      <Overlay isVisible={modalActive} onBackdropPress={() => setModalActive(false)}>
+        <Rewards/>
+      </Overlay>
     </Container>
   );
 };
