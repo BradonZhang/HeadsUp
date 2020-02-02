@@ -1,8 +1,8 @@
 import React, { useState, useEffect, FunctionComponent } from 'react';
-import { db } from '../config';
 import { ListItem } from 'react-native-elements';
 import { View } from 'react-native';
 
+import { db } from 'res/firebase';
 
 const Rewards: FunctionComponent = (props) => {
   const [rewardsAvailable, setRewardsAvailable] = useState<Array<any>>([]);
