@@ -47,6 +47,7 @@ const HomeScreen: ScreenComponent = (props) => {
       }
       if (_subscription && !active) {
         _subscription.remove();
+        _subscription = null;
       }
     }, 10000);
   }, []);
