@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Alert, AppState, StyleSheet } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
-import { db } from '../config';
+import { db } from '../res/firebase';
 
 import { ScreenComponent } from 'utils/interfaces';
 import { stepsPerPoint } from 'res/constants';
@@ -64,7 +64,7 @@ const HomeScreen: ScreenComponent = (props) => {
   return (
     <Container>
       <LargeText>{steps} steps</LargeText>
-      <LargeText>{Math.floor(points)} <MediumText>SafeCoins™</MediumText></LargeText>
+      <LargeText>{Math.floor(points)} <MediumText>SafeCoins</MediumText></LargeText>
       <Button title={'press me uwu'} onPress={handlePress} />
     </Container>
   );
