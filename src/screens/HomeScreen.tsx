@@ -27,9 +27,14 @@ const HomeScreen: ScreenComponent = (props) => {
   const [active, setActive] = useState(true);
 
   useEffect(() => {
+    let initialSteps = 0;
+    let newSteps = 0;
     Pedometer.watchStepCount(({ steps }) => {
       setSteps(steps);
+      newSteps = steps;
     });
+    db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get().then((doc) => initialSteps = doc.data()!.steps);
+    setInterval(() => db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({steps: initialSteps + newSteps}), 10000);
   }, []);
 
   useEffect(() => {
@@ -38,10 +43,7 @@ const HomeScreen: ScreenComponent = (props) => {
   }, []);
 
   const handlePress = async () => {
-    let y = await db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get();
-    db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({x: (y.data()!.steps ? 0 : y.data()!.steps) + steps}).then(() => {
-      setSteps(0);
-    });
+    Alert.alert("Testing");
   };
 
   return (
