@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {Platform, StatusBar, AppState, StyleSheet, ActivityIndicator } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
-import { db } from '../config';
 import {Overlay, Button, Header} from 'react-native-elements';
-import Rewards from '../components/Rewards';
+
+import Rewards from 'components/Rewards';
+import { db } from 'res/firebase';
 
 import { ScreenComponent } from 'utils/interfaces';
 import { stepsPerPoint } from 'res/constants';
