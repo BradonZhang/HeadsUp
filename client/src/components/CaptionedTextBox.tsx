@@ -10,6 +10,7 @@ interface CaptionedTextBoxProps {
 
 const Container = styled.View`
   flex: 1;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
 `;
@@ -19,15 +20,17 @@ const Caption = styled.Text`
   font-size: 16px;
   font-weight: bold;
   color: white;
-  margin: 2px;
+  /* padding: 10%; */
 `;
 
 const TextInput = styled.TextInput`
   width: 100%;
+  font-size: 20px;
   border: 1px solid black;
-  border-radius: 2px;
+  border-radius: 10px;
   background-color: white;
-  margin: 2px;
+  /* margin: 10%; */
+  padding: 4%;
 `;
 
 const CaptionedTextBox: FunctionComponent<CaptionedTextBoxProps> = (props) => {

@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import {Platform, StatusBar, AppState, StyleSheet, ActivityIndicator } from 'react-native';
+import { Platform, StatusBar, AppState, StyleSheet, Image, Dimensions } from 'react-native';
+import { Overlay, Button, Header } from 'react-native-elements';
 import { Pedometer } from 'expo-sensors';
 import styled from 'styled-components/native';
-import {Overlay, Button, Header} from 'react-native-elements';
 
 import Rewards from 'components/Rewards';
 import { db } from 'res/firebase';
-
+import { stepsPerPoint, colors } from 'res/constants';
 import { ScreenComponent } from 'utils/interfaces';
-import { stepsPerPoint } from 'res/constants';
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+const imageWidth = screenWidth * 0.8;
 
 const Container = styled.View`
   flex: 1;
-  background-color: lightblue;
+  background-color: ${colors.background};
   align-items: center;
   justify-content: center;
   margin-top: ${Platform.OS === 'android' ? StatusBar.currentHeight : 0}px;
+`;
+
+const ImageContainer = styled.View`
+  position: absolute;
+  top: 0px;
+  justify-content: center;
+  align-items: center;
+  width: ${screenWidth}px;
+`;
+
+const MegaText = styled.Text`
+  font-size: 72px;
+  font-weight: bold;
 `;
 
 const LargeText = styled.Text`
@@ -26,7 +42,13 @@ const MediumText = styled.Text`
   font-size: 36px;
 `;
 
+const ButtonContainer = styled.View`
+  transform: translateY(${screenHeight * 0.1}px);
+`;
+
 const HomeScreen: ScreenComponent = (props) => {
+  const email: string = props.navigation.getParam('email');
+
   let _subscription: Pedometer.PedometerListener | null = null;
   const [steps, setSteps] = useState(0);
   const [points, setPoints] = useState(0);
@@ -35,15 +57,25 @@ const HomeScreen: ScreenComponent = (props) => {
 
   useEffect(() => {
     let initialSteps = 0;
+    let initialPoints = 0;
     let newSteps = 0;
     _subscription = Pedometer.watchStepCount(({ steps }) => {
-      setSteps(steps);
+      setSteps(initialSteps + steps);
       newSteps = steps;
     });
-    db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get().then((doc) => initialSteps = doc.data()!.steps);
-    setInterval(() => {
-      db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({steps: initialSteps + newSteps});
-      db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get().then((doc) => setPoints(doc.data()!.steps/stepsPerPoint));
+    db.collection('users').doc(email).get().then((doc) => {
+      initialSteps = doc.data()!.steps;
+      initialPoints = doc.data()!.points;
+    });
+    setInterval(async () => {
+      await db.collection('users').doc(email).update({
+        steps: initialSteps + newSteps,
+        points: initialPoints + newSteps / stepsPerPoint
+      });
+      const doc = await db.collection('users').doc(email).get();
+      const points = doc.data()!.points;
+      setPoints(points);
+
       if (!_subscription && active) {
         _subscription = Pedometer.watchStepCount(({ steps }) => {
           setSteps(steps);
@@ -68,16 +100,22 @@ const HomeScreen: ScreenComponent = (props) => {
 
   return (
     <Container>
-      <Header backgroundColor= "rgb(232, 255, 251)" containerStyle={{
-        position: 'absolute',
-        top: 0,
-        width: '100%'
-      }}/>
-      <LargeText>{steps} steps</LargeText>
-      <LargeText>{Math.floor(points)} <MediumText>SafeCoins</MediumText></LargeText>
-      <Button raised type="solid" title={'Redeem Rewards!'} onPress={handlePress} />
+      <ImageContainer>
+        <Image
+          source={require('assets/logo.png')}
+          style={{width: imageWidth}}
+          resizeMode={'contain'}
+        />
+      </ImageContainer>
+      <MediumText>{steps} steps</MediumText>
+      <MegaText>{Math.floor(points)}
+        <MediumText> point{Math.floor(points) !== 1 && 's'}</MediumText>
+      </MegaText>
+      <ButtonContainer>
+        <Button raised type={'solid'} title={'Redeem Rewards!'} onPress={handlePress} />
+      </ButtonContainer>
       <Overlay isVisible={modalActive} onBackdropPress={() => setModalActive(false)}>
-        <Rewards/>
+        <Rewards email={email} />
       </Overlay>
     </Container>
   );
