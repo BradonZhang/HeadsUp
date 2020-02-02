@@ -73,7 +73,7 @@ const HomeScreen: ScreenComponent = (props) => {
         width: '100%'
       }}/>
       <LargeText>{steps} steps</LargeText>
-      <LargeText>{Math.floor(points)} <MediumText>SafeCoins™</MediumText></LargeText>
+      <LargeText>{Math.floor(points)} <MediumText>SafeCoins</MediumText></LargeText>
       <Button raised type="solid" title={'Redeem Rewards!'} onPress={handlePress} />
       <Overlay isVisible={modalActive} onBackdropPress={() => setModalActive(false)}>
         <Rewards/>
