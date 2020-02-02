@@ -23,23 +23,37 @@ const MediumText = styled.Text`
 `;
 
 const HomeScreen: ScreenComponent = (props) => {
+  let _subscription: Pedometer.PedometerListener | null = null;
   const [steps, setSteps] = useState(0);
+  const [points, setPoints] = useState(0);
   const [active, setActive] = useState(true);
 
   useEffect(() => {
     let initialSteps = 0;
     let newSteps = 0;
-    Pedometer.watchStepCount(({ steps }) => {
+    _subscription = Pedometer.watchStepCount(({ steps }) => {
       setSteps(steps);
       newSteps = steps;
     });
     db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get().then((doc) => initialSteps = doc.data()!.steps);
-    setInterval(() => db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({steps: initialSteps + newSteps}), 10000);
+    setInterval(() => {
+      db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").update({steps: initialSteps + newSteps});
+      db.collection("users").doc("0k2VwKju0LkXZ1MACa8y").get().then((doc) => setPoints(doc.data()!.steps/stepsPerPoint));
+      if (!_subscription && active) {
+        _subscription = Pedometer.watchStepCount(({ steps }) => {
+          setSteps(steps);
+          newSteps = steps;
+        });
+      }
+      if (_subscription && !active) {
+        _subscription.remove();
+      }
+    }, 10000);
   }, []);
 
   useEffect(() => {
     AppState.addEventListener('change', state => setActive(state === 'active'));
-    return () => AppState.removeEventListener('change', () => {});
+    return () => AppState.removeEventListener('change', () => {_subscription && _subscription.remove();});
   }, []);
 
   const handlePress = async () => {
@@ -49,7 +63,7 @@ const HomeScreen: ScreenComponent = (props) => {
   return (
     <Container>
       <LargeText>{steps} steps</LargeText>
-      <LargeText>{Math.floor(steps / stepsPerPoint)} <MediumText>SafeCoins™</MediumText></LargeText>
+      <LargeText>{Math.floor(points)} <MediumText>SafeCoins™</MediumText></LargeText>
       <Button title={'press me uwu'} onPress={handlePress} />
     </Container>
   );
